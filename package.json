@@ -1,0 +1,28 @@
+{
+  "name": "bamazon",
+  "version": "1.0.0",
+  "description": "Node.js and MySQL assigment",
+  "main": "bamazonCustomer.js",
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeancarlov/MySQL.git"
+  },
+  "keywords": [
+    "node.js",
+    "mysql",
+    "assigment"
+  ],
+  "author": "Jean Carlo Valderrama",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jeancarlov/MySQL/issues"
+  },
+  "homepage": "https://github.com/jeancarlov/MySQL#readme",
+  "dependencies": {
+    "inquirer": "^6.2.2",
+    "mysql": "^2.16.0"
+  }
+}

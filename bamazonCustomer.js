@@ -22,11 +22,7 @@ connection.connect(function (err) {
     if (err) throw err;
     // sucesss message
     console.log("connected as id " + connection.threadId);
-    // gracefully end this connection and back to the terminal.
     queryAllProducts();
-    listOfQuestions();
-    // connection.end();
-
 });
 
 function queryAllProducts() {
@@ -39,27 +35,44 @@ function queryAllProducts() {
         });
         for (var i = 0; i < res.length; i++) {
             table.push(
-                [res[i].item_id , res[i].product_name, res[i].department_name, res[i].price,res[i].stock_quantity]
+                [res[i].item_id, res[i].product_name, res[i].department_name, res[i].price, res[i].stock_quantity]
             );
         }
-
-        // console.log("-----------------------------------");
         console.log(table.toString());
-        // listOfQuestions();
+        firstQuestions();
     });
 
 
 }
 
-// function to handle posting new items up for auction
-function listOfQuestions() {
-    // prompt for info about the item being put up for auction
+// function to handle users choices
+function firstQuestions() {
+    inquirer
+        .prompt([
+            {
+                name: "item",
+                type: "list",
+                message: "Do you want a [Purchase] something from the list of products, or [Exit]?",
+                choices: ["Purchase", "Exit"],
+            },
+        ]).then(function (answer) {
+            if (answer.item === "Purchase") {
+                purchase();
+            } else {
+                console.log("Goodbye");
+                connection.end();
+                
+            }
+        })
+}
+
+function purchase() {
     inquirer
         .prompt([
             {
                 name: "item",
                 type: "input",
-                message: "What is the ID of the item you like to purchase?",
+                message: "What is the ID of the item you want to purchase?",
                 validate: function (value) {
                     if (isNaN(value) === false) { // this is avalidation 
                         return true;
@@ -70,7 +83,7 @@ function listOfQuestions() {
             {
                 name: "quantity",
                 type: "input",
-                message: "How many would you like to purchase?",
+                message: "How many you want to purchase?",
                 validate: function (value) {
                     if (isNaN(value) === false) { // this is avalidation 
                         return true;
@@ -81,9 +94,9 @@ function listOfQuestions() {
         ])
         .then(function (answer) {
             // update the product list related to the response
-            connection.query('SELECT * FROM `product` WHERE `item_id` = ?', [answer.item], function (error, res, fields) {
+            connection.query('SELECT * FROM `product` WHERE `item_id` = ?', [answer.item], function (error, res) {
                 if (error) throw error;
-                // console.log(res[0].stock_quantity); this ckeck the query and the total quantity of stock before the update
+                // console.log(res[0].stock_quantity); This is to ckeck the query and the total quantity of stock before the update
                 if (answer.quantity < res[0].stock_quantity) {
                     connection.query(
                         "UPDATE `product` SET ? WHERE ?",
@@ -97,16 +110,12 @@ function listOfQuestions() {
                         ],
                     )
                     console.log(`Thank you, your ${answer.quantity} items are ready to checkout.`);
-                    console.log(`Our current in stock total: ${res[0].stock_quantity}`); // ckeck why is this one not giving me the current total!!!!
+                    console.log(`Our current in stock total: ${res[0].stock_quantity}`); // check why is this one not giving me the current total!!!!
                     queryAllProducts();
-                    connection.end();
-                    listOfQuestions()
-                    // connection.end();
                 } else if (answer.quantity > res[0].stock_quantity) {
-                    console.log("Sorry our maximum quantity is 100");
-                    connection.end();
-                    listOfQuestions();
-
+                    // console.log("Sorry our maximum quantity is 100");
+                    console.log(`Sorry our maximum quantity is ${res[0].stock_quantity}`);
+                    queryAllProducts();
                 }
 
             });

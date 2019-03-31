@@ -72,22 +72,29 @@ function listOfQuestions() {
             connection.query('SELECT * FROM `product` WHERE `item_id` = ?', [answer.item], function (error, res, fields) {
                 if (error) throw error;
                 // console.log(res[0].stock_quantity); this ckeck the query and the total quantity of stock before the update
-                if (answer.quantity > res[0].stock_quantity) {
-                    console.log("Sorry our maximum quantity is 100");
-                    connection.end();
-                    listOfQuestions();
-                } else {
+                if (answer.quantity < res[0].stock_quantity) {
                     connection.query(
                         "UPDATE `product` SET ? WHERE ?",
                         [
                             {
-                                stock_quantity: res[0].stock_quantity - answer.quantity,
+                                stock_quantity: parseInt(res[0].stock_quantity - answer.quantity),
                             },
                             {
                                 item_id: answer.item// here is where we are relying in our uniquie id  
                             }
                         ],
-                    )}
+                    )
+                    console.log(`Thank you, your ${answer.quantity} items are ready to checkout.`);
+                    queryAllProducts();
+                    // listOfQuestions()
+                    connection.end();
+                } else if (answer.quantity > res[0].stock_quantity) {
+                    console.log("Sorry our maximum quantity is 100");
+                    connection.end();
+                    listOfQuestions();
+
+                }
+
             });
         })
 }

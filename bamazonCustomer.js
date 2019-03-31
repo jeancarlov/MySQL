@@ -1,5 +1,6 @@
 var mysql = require("mysql");
 var inquirer = require("inquirer");
+var Table = require('cli-table');
 
 // create the connection information for the sql database
 var connection = mysql.createConnection({
@@ -29,11 +30,22 @@ connection.connect(function (err) {
 });
 
 function queryAllProducts() {
-    connection.query("SELECT * FROM product", function (err, res) {
+    connection.query("SELECT * FROM product", function (error, res) {
+        if (error) throw error;
+        // code to enhance the structure of the table display in node.
+        var table = new Table({
+            head: ["ID", "Name", "Department", "Price", "In Stock"],
+            colWidths: [10, 20, 20, 20, 10]
+        });
         for (var i = 0; i < res.length; i++) {
-            console.log(res[i].item_id + " | " + res[i].product_name + " | " + res[i].department_name + " | " + res[i].price + " | " + res[i].stock_quantity);
+            table.push(
+                [res[i].item_id , res[i].product_name, res[i].department_name, res[i].price,res[i].stock_quantity]
+            );
         }
-        console.log("-----------------------------------");
+
+        // console.log("-----------------------------------");
+        console.log(table.toString());
+        // listOfQuestions();
     });
 
 
@@ -85,9 +97,11 @@ function listOfQuestions() {
                         ],
                     )
                     console.log(`Thank you, your ${answer.quantity} items are ready to checkout.`);
+                    console.log(`Our current in stock total: ${res[0].stock_quantity}`); // ckeck why is this one not giving me the current total!!!!
                     queryAllProducts();
-                    // listOfQuestions()
                     connection.end();
+                    listOfQuestions()
+                    // connection.end();
                 } else if (answer.quantity > res[0].stock_quantity) {
                     console.log("Sorry our maximum quantity is 100");
                     connection.end();

@@ -19,7 +19,7 @@ CREATE TABLE product (
 
     stock_quantity INT default 0,   --INTEGER(10) whats the difference
 
-    PRIMARY KEY (id)    
+    PRIMARY KEY (item_id)    
 
 );
 INSERT INTO product (product_name, department_name, price, stock_quantity)

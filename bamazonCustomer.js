@@ -110,8 +110,9 @@ function purchase() {
                         ],
                     )
                     console.log(`Thank you, your ${answer.quantity} items are ready to checkout.`);
-                    console.log(`Our current in stock total: ${res[0].stock_quantity}`); // check why is this one not giving me the current total!!!!
+                    console.log(`Our current in stock total: ${res[0].stock_quantity - answer.quantity}`); // check why is this one not giving me the current total!!!!
                     queryAllProducts();
+                    
                 } else if (answer.quantity > res[0].stock_quantity) {
                     // console.log("Sorry our maximum quantity is 100");
                     console.log(`Sorry our maximum quantity is ${res[0].stock_quantity}`);

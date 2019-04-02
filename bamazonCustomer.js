@@ -103,16 +103,22 @@ function purchase() {
                         [
                             {
                                 stock_quantity: parseInt(res[0].stock_quantity - answer.quantity),
+                                // product_sales: parseInt((res[0].price * answer.quantity) + res[0].product_sales)
+
                             },
                             {
                                 item_id: answer.item// here is where we are relying in our uniquie id  
                             }
                         ],
+                        
                     )
                     console.log(`Thank you, your ${answer.quantity} items are ready to checkout.`);
-                    console.log(`Our current in stock total: ${res[0].stock_quantity - answer.quantity}`); // check why is this one not giving me the current total!!!!
+                    console.log(`Our current in stock total: ${res[0].stock_quantity - answer.quantity}`); 
+                    console.log((`List of items total price: $${(res[0].price * answer.quantity)} dollars. `));
+                    
                     queryAllProducts();
                     
+
                 } else if (answer.quantity > res[0].stock_quantity) {
                     // console.log("Sorry our maximum quantity is 100");
                     console.log(`Sorry our maximum quantity is ${res[0].stock_quantity}`);
@@ -122,5 +128,8 @@ function purchase() {
             });
         })
 }
+
+
+
 
 

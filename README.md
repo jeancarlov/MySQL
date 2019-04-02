@@ -1,4 +1,4 @@
-#Bamazon Store
+# Bamazon Store
 
 ## Technolgies: 
 * MySQL, Node.js, JavaScript
